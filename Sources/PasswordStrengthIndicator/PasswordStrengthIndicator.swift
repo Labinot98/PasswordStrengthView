@@ -23,14 +23,8 @@ public struct PasswordStrengthView: View {
     }
 
     public var body: some View {
-        VStack(alignment: .leading) {
-            Text("Password Strength:")
-                .font(.headline)
-                .foregroundColor(.black)
-
             ProgressBar(passwordStrength: calculateStrength(password))
                 .frame(height: 10)
-        }
     }
 
     private func calculateStrength(_ password: String) -> PasswordStrengthColor {
@@ -53,7 +47,7 @@ struct ProgressBar: View {
                     .cornerRadius(5.0)
 
                 Rectangle()
-                    .frame(width: geometry.size.width * self.getWidth(), height: geometry.size.height)
+                    .frame(width: self.getWidth(from: geometry.size.width), height: geometry.size.height)
                     .foregroundColor(self.passwordStrength.color)
                     .cornerRadius(5.0)
                     .animation(.linear)
@@ -61,14 +55,14 @@ struct ProgressBar: View {
         }
     }
 
-    private func getWidth() -> CGFloat {
+    private func getWidth(from totalWidth: CGFloat) -> CGFloat {
         switch passwordStrength {
         case .weak:
-            return 0.3
+            return totalWidth * 0.3
         case .medium:
-            return 0.6
+            return totalWidth * 0.6
         case .strong:
-            return 1.0
+            return totalWidth * 1.0
         }
     }
 }
