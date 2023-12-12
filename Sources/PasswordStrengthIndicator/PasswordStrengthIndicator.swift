@@ -57,16 +57,17 @@ public struct PasswordStrengthView: View {
             return .none // Contains spaces between letters
         }
         
-        if length >= 6 {
-            if trimmedPassword.rangeOfCharacter(from: .uppercaseLetters) != nil && trimmedPassword.rangeOfCharacter(from: .punctuationCharacters) != nil {
-                return .strong
-            } else if trimmedPassword.rangeOfCharacter(from: .uppercaseLetters) != nil {
-                return .medium
-            } else if trimmedPassword.rangeOfCharacter(from: .lowercaseLetters) != nil && trimmedPassword.rangeOfCharacter(from: .punctuationCharacters) != nil {
-                return .medium
-            }
+        let passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$"
+        let strength = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
+        let isStrong = strength.evaluate(with: trimmedPassword)
+        
+        if isStrong {
+            return .strong
+        } else if length == 6 {
+            return .medium
+        } else {
+            return length > 0 ? .weak : .none // Check if there are any letters, else none
         }
-        return length > 0 ? .weak : .none // Check if there are any letters, else none
     }
 }
 
