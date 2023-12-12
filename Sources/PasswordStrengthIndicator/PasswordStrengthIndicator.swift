@@ -18,10 +18,32 @@ public struct PasswordStrengthView: View {
         }
     }
 
+    
     private func calculateStrength(_ password: String) -> Double {
-        // Logic to determine password strength (you can implement your own here)
-        let passwordLength = Double(password.count)
-        return min(passwordLength / 10.0, 1.0) // Adjust this according to your strength criteria
+        var strength = 0.0
+
+        // Check for lowercase characters
+        let lowercaseSet = CharacterSet.lowercaseLetters
+        let lowercaseRange = password.rangeOfCharacter(from: lowercaseSet)
+        if lowercaseRange != nil {
+            strength += 0.5
+        }
+
+        // Check for uppercase characters
+        let uppercaseSet = CharacterSet.uppercaseLetters
+        let uppercaseRange = password.rangeOfCharacter(from: uppercaseSet)
+        if uppercaseRange != nil {
+            strength += 0.5
+        }
+
+        // Check for special characters
+        let specialCharacterSet = CharacterSet.punctuationCharacters
+        let specialCharactersRange = password.rangeOfCharacter(from: specialCharacterSet)
+        if specialCharactersRange != nil {
+            strength += 1.0
+        }
+
+        return min(strength, 2.0) // Cap strength at 2.0
     }
 }
 
