@@ -6,7 +6,7 @@ public enum PasswordStrengthColor {
     var color: Color {
         switch self {
         case .none:
-            return Color.gray.opacity(0.0) // Transparent if no letters
+            return Color.gray.opacity(0.2)
         case .weak:
             return Color.red
         case .medium:
@@ -19,7 +19,7 @@ public enum PasswordStrengthColor {
     var progress: Double {
         switch self {
         case .none:
-            return 0.0
+            return 1.0
         case .weak:
             return 0.3
         case .medium:
