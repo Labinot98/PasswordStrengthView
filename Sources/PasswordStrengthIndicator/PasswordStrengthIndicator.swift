@@ -15,6 +15,19 @@ public enum PasswordStrengthColor {
             return Color.green
         }
     }
+
+    var progress: Double {
+        switch self {
+        case .none:
+            return 0.0
+        case .weak:
+            return 0.3
+        case .medium:
+            return 0.7
+        case .strong:
+            return 1.0
+        }
+    }
 }
 
 public struct PasswordStrengthView: View {
@@ -42,6 +55,8 @@ public struct PasswordStrengthView: View {
                 return .strong
             } else if password.rangeOfCharacter(from: .uppercaseLetters) != nil {
                 return .medium
+            } else if password.rangeOfCharacter(from: .lowercaseLetters) != nil && password.rangeOfCharacter(from: .punctuationCharacters) != nil {
+                return .medium
             }
         }
         return .weak
@@ -55,10 +70,9 @@ struct ProgressBar: View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
                 Rectangle()
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-                    .foregroundColor(passwordStrength.color)
+                    .frame(width: geometry.size.width * CGFloat(self.passwordStrength.progress), height: geometry.size.height)
+                    .foregroundColor(self.passwordStrength.color)
                     .cornerRadius(5.0)
-                    .opacity(passwordStrength == .none ? 0.3 : 1.0)
                     .animation(.linear)
             }
         }
