@@ -19,11 +19,11 @@ public enum PasswordStrengthColor {
     var progress: Double {
         switch self {
         case .none:
-            return 0.0
+            return 1.0
         case .weak:
-            return 0.25 // Adjust these values based on your criteria
+            return 0.3
         case .medium:
-            return 0.5 // Adjust these values based on your criteria
+            return 0.7
         case .strong:
             return 1.0
         }
@@ -52,27 +52,22 @@ public struct PasswordStrengthView: View {
     private func calculateStrength(_ password: String) -> PasswordStrengthColor {
         let trimmedPassword = password.trimmingCharacters(in: .whitespacesAndNewlines)
         let length = trimmedPassword.count
-
-        // Check for spaces between letters
-        if password.containsSpacesBetweenLetters {
+        
+        if password.contains(" ") {
             return .none
         }
-
-        // Check against regex patterns for password strength
-        if length >= 8 {
-            if NSPredicate(format: "SELF MATCHES %@", "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$").evaluate(with: trimmedPassword) {
-                return .weak
-            } else if NSPredicate(format: "SELF MATCHES %@", "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$").evaluate(with: trimmedPassword) {
-                return .medium
-            } else if NSPredicate(format: "SELF MATCHES %@", "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$").evaluate(with: trimmedPassword) {
-                return .medium
-            } else if NSPredicate(format: "SELF MATCHES %@", "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,10}$").evaluate(with: trimmedPassword) {
+        
+        if length >= 6 {
+            if trimmedPassword.rangeOfCharacter(from: .uppercaseLetters) != nil && trimmedPassword.rangeOfCharacter(from: .punctuationCharacters) != nil {
                 return .strong
+            } else if trimmedPassword.rangeOfCharacter(from: .uppercaseLetters) != nil {
+                return .medium
+            } else if trimmedPassword.rangeOfCharacter(from: .lowercaseLetters) != nil && trimmedPassword.rangeOfCharacter(from: .punctuationCharacters) != nil {
+                return .medium
             }
         }
-        return length > 0 ? .none : .none // Check if there are any letters, else none
+        return length > 0 ? .weak : .none // Check if there are any letters, else none
     }
-
 }
 
 struct ProgressBar: View {
