@@ -1,5 +1,20 @@
 import SwiftUI
 
+public enum PasswordStrengthColor {
+    case weak, medium, strong
+
+    var color: Color {
+        switch self {
+        case .weak:
+            return Color.red
+        case .medium:
+            return Color.yellow
+        case .strong:
+            return Color.green
+        }
+    }
+}
+
 public struct PasswordStrengthView: View {
     @Binding var password: String
 
@@ -18,37 +33,16 @@ public struct PasswordStrengthView: View {
         }
     }
 
-    
-    private func calculateStrength(_ password: String) -> Double {
-        var strength = 0.0
+    private func calculateStrength(_ password: String) -> PasswordStrengthColor {
+        let passwordRegex = "(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}"
 
-        // Check for lowercase characters
-        let lowercaseSet = CharacterSet.lowercaseLetters
-        let lowercaseRange = password.rangeOfCharacter(from: lowercaseSet)
-        if lowercaseRange != nil {
-            strength += 0.5
-        }
-
-        // Check for uppercase characters
-        let uppercaseSet = CharacterSet.uppercaseLetters
-        let uppercaseRange = password.rangeOfCharacter(from: uppercaseSet)
-        if uppercaseRange != nil {
-            strength += 0.5
-        }
-
-        // Check for special characters
-        let specialCharacterSet = CharacterSet.punctuationCharacters
-        let specialCharactersRange = password.rangeOfCharacter(from: specialCharacterSet)
-        if specialCharactersRange != nil {
-            strength += 1.0
-        }
-
-        return min(strength, 2.0) // Cap strength at 2.0
+        let strength = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
+        return strength.evaluate(with: password) ? .strong : .weak
     }
 }
 
 struct ProgressBar: View {
-    var passwordStrength: Double
+    var passwordStrength: PasswordStrengthColor
 
     var body: some View {
         GeometryReader { geometry in
@@ -59,22 +53,22 @@ struct ProgressBar: View {
                     .cornerRadius(5.0)
 
                 Rectangle()
-                    .frame(width: min(CGFloat(self.passwordStrength) * geometry.size.width, geometry.size.width), height: geometry.size.height)
-                    .foregroundColor(self.getPasswordStrengthColor())
+                    .frame(width: geometry.size.width * self.getWidth(), height: geometry.size.height)
+                    .foregroundColor(self.passwordStrength.color)
                     .cornerRadius(5.0)
                     .animation(.linear)
             }
         }
     }
 
-    private func getPasswordStrengthColor() -> Color {
-        // Modify this logic to set colors based on the password strength
-        if passwordStrength < 0.3 {
-            return Color.red
-        } else if passwordStrength < 0.7 {
-            return Color.yellow
-        } else {
-            return Color.green
+    private func getWidth() -> CGFloat {
+        switch passwordStrength {
+        case .weak:
+            return 0.3
+        case .medium:
+            return 0.6
+        case .strong:
+            return 1.0
         }
     }
 }
