@@ -52,23 +52,27 @@ public struct PasswordStrengthView: View {
     private func calculateStrength(_ password: String) -> PasswordStrengthColor {
         let trimmedPassword = password.trimmingCharacters(in: .whitespacesAndNewlines)
         let length = trimmedPassword.count
-        
-        if password.contains(" ") {
-            return .none // Contains spaces between letters
+
+        // Check for spaces between letters
+        if password.containsSpacesBetweenLetters {
+            return .none
         }
-        
-        let passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$"
-        let strength = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
-        let isStrong = strength.evaluate(with: trimmedPassword)
-        
-        if isStrong {
-            return .strong
-        } else if length == 6 {
-            return .medium
-        } else {
-            return length > 0 ? .weak : .none // Check if there are any letters, else none
+
+        // Check against regex patterns for password strength
+        if length >= 8 {
+            if NSPredicate(format: "SELF MATCHES %@", "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$").evaluate(with: trimmedPassword) {
+                return .weak
+            } else if NSPredicate(format: "SELF MATCHES %@", "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$").evaluate(with: trimmedPassword) {
+                return .medium
+            } else if NSPredicate(format: "SELF MATCHES %@", "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$").evaluate(with: trimmedPassword) {
+                return .medium
+            } else if NSPredicate(format: "SELF MATCHES %@", "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,10}$").evaluate(with: trimmedPassword) {
+                return .strong
+            }
         }
+        return length > 0 ? .none : .none // Check if there are any letters, else none
     }
+
 }
 
 struct ProgressBar: View {
