@@ -39,17 +39,19 @@ public struct PasswordStrengthView: View {
 
     public var body: some View {
         VStack(alignment: .leading) {
-            Text("Password Strength:")
-                .font(.headline)
-                .foregroundColor(.black)
-
+            if password.containsWhiteSpaces {
+                Text("Password should not contain white spaces")
+//                    .foregroundColor(.red)
+                    .font(.footnote.bold())
+                    .padding(.bottom, 5)
+            }
             ProgressBar(passwordStrength: calculateStrength(password))
                 .frame(height: 10)
         }
     }
 
     private func calculateStrength(_ password: String) -> PasswordStrengthColor {
-        let length = password.count
+        let length = password.trimmingCharacters(in: .whitespacesAndNewlines).count
         if length >= 6 {
             if password.rangeOfCharacter(from: .uppercaseLetters) != nil && password.rangeOfCharacter(from: .punctuationCharacters) != nil {
                 return .strong
@@ -76,5 +78,11 @@ struct ProgressBar: View {
                     .animation(.linear)
             }
         }
+    }
+}
+
+extension String {
+    var containsWhiteSpaces: Bool {
+        return self != trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
