@@ -36,12 +36,15 @@ public struct PasswordStrengthView: View {
     }
 
     private func calculateStrength(_ password: String) -> PasswordStrengthColor {
-        guard !password.isEmpty else { return .none }
-
-        let passwordRegex = "(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}"
-
-        let strength = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
-        return strength.evaluate(with: password) ? .strong : .weak
+        let length = password.count
+        if length >= 6 {
+            if password.rangeOfCharacter(from: .uppercaseLetters) != nil && password.rangeOfCharacter(from: .punctuationCharacters) != nil {
+                return .strong
+            } else if password.rangeOfCharacter(from: .uppercaseLetters) != nil {
+                return .medium
+            }
+        }
+        return .weak
     }
 }
 
@@ -61,4 +64,3 @@ struct ProgressBar: View {
         }
     }
 }
-
