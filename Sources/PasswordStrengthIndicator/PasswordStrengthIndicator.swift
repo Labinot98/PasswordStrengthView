@@ -39,10 +39,9 @@ public struct PasswordStrengthView: View {
 
     public var body: some View {
         VStack(alignment: .leading) {
-            if password.containsWhiteSpaces {
-                Text("Password should not contain white spaces")
-//                    .foregroundColor(.red)
-                    .font(.footnote.bold())
+            if password.containsSpacesBetweenLetters {
+                Text("Password should not contain spaces between letters")
+                    .foregroundColor(.red)
                     .padding(.bottom, 5)
             }
             ProgressBar(passwordStrength: calculateStrength(password))
@@ -51,13 +50,19 @@ public struct PasswordStrengthView: View {
     }
 
     private func calculateStrength(_ password: String) -> PasswordStrengthColor {
-        let length = password.trimmingCharacters(in: .whitespacesAndNewlines).count
+        let trimmedPassword = password.trimmingCharacters(in: .whitespacesAndNewlines)
+        let length = trimmedPassword.count
+        
+        if password.contains(" ") {
+            return .none // Contains spaces between letters
+        }
+        
         if length >= 6 {
-            if password.rangeOfCharacter(from: .uppercaseLetters) != nil && password.rangeOfCharacter(from: .punctuationCharacters) != nil {
+            if trimmedPassword.rangeOfCharacter(from: .uppercaseLetters) != nil && trimmedPassword.rangeOfCharacter(from: .punctuationCharacters) != nil {
                 return .strong
-            } else if password.rangeOfCharacter(from: .uppercaseLetters) != nil {
+            } else if trimmedPassword.rangeOfCharacter(from: .uppercaseLetters) != nil {
                 return .medium
-            } else if password.rangeOfCharacter(from: .lowercaseLetters) != nil && password.rangeOfCharacter(from: .punctuationCharacters) != nil {
+            } else if trimmedPassword.rangeOfCharacter(from: .lowercaseLetters) != nil && trimmedPassword.rangeOfCharacter(from: .punctuationCharacters) != nil {
                 return .medium
             }
         }
@@ -82,7 +87,7 @@ struct ProgressBar: View {
 }
 
 extension String {
-    var containsWhiteSpaces: Bool {
-        return self != trimmingCharacters(in: .whitespacesAndNewlines)
+    var containsSpacesBetweenLetters: Bool {
+        return self.contains(" ")
     }
 }
