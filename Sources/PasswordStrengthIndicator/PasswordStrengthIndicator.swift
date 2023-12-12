@@ -19,11 +19,11 @@ public enum PasswordStrengthColor {
     var progress: Double {
         switch self {
         case .none:
-            return 1.0
+            return 0.0
         case .weak:
-            return 0.3
+            return 0.25 // Adjust these values based on your criteria
         case .medium:
-            return 0.7
+            return 0.5 // Adjust these values based on your criteria
         case .strong:
             return 1.0
         }
