@@ -6,7 +6,7 @@ public enum PasswordStrengthColor {
     var color: Color {
         switch self {
         case .none:
-            return Color.gray.opacity(0.3)
+            return Color.gray.opacity(0.0) // Transparent if no letters
         case .weak:
             return Color.red
         case .medium:
@@ -59,7 +59,7 @@ public struct PasswordStrengthView: View {
                 return .medium
             }
         }
-        return .weak
+        return length > 0 ? .weak : .none // Check if there are any letters, else none
     }
 }
 
