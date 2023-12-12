@@ -1,10 +1,12 @@
 import SwiftUI
 
 public enum PasswordStrengthColor {
-    case weak, medium, strong
+    case none, weak, medium, strong
 
     var color: Color {
         switch self {
+        case .none:
+            return Color.gray.opacity(0.3)
         case .weak:
             return Color.red
         case .medium:
@@ -23,11 +25,19 @@ public struct PasswordStrengthView: View {
     }
 
     public var body: some View {
+        VStack(alignment: .leading) {
+            Text("Password Strength:")
+                .font(.headline)
+                .foregroundColor(.black)
+
             ProgressBar(passwordStrength: calculateStrength(password))
                 .frame(height: 10)
+        }
     }
 
     private func calculateStrength(_ password: String) -> PasswordStrengthColor {
+        guard !password.isEmpty else { return .none }
+
         let passwordRegex = "(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}"
 
         let strength = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
@@ -43,26 +53,12 @@ struct ProgressBar: View {
             ZStack(alignment: .leading) {
                 Rectangle()
                     .frame(width: geometry.size.width, height: geometry.size.height)
-                    .foregroundColor(Color.gray.opacity(0.3))
+                    .foregroundColor(passwordStrength.color)
                     .cornerRadius(5.0)
-
-                Rectangle()
-                    .frame(width: self.getWidth(from: geometry.size.width), height: geometry.size.height)
-                    .foregroundColor(self.passwordStrength.color)
-                    .cornerRadius(5.0)
+                    .opacity(passwordStrength == .none ? 0.3 : 1.0)
                     .animation(.linear)
             }
         }
     }
-
-    private func getWidth(from totalWidth: CGFloat) -> CGFloat {
-        switch passwordStrength {
-        case .weak:
-            return totalWidth * 0.3
-        case .medium:
-            return totalWidth * 0.6
-        case .strong:
-            return totalWidth * 1.0
-        }
-    }
 }
+
