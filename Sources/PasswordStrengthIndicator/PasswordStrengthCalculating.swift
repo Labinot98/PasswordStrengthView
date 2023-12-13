@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PasswordStrengthCalculating.swift
 //  
 //
 //  Created by Pajaziti Labinot on 13.12.23..
