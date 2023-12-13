@@ -7,9 +7,6 @@
 
 import Foundation
 
- protocol PasswordStrengthCalculating {
-    func calculateStrength(_ password: String) -> PasswordStrengthColor
-}
 
  extension String {
     func calculateStrength() -> PasswordStrengthColor {
