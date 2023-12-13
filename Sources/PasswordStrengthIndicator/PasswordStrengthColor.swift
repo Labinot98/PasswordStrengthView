@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-enum PasswordStrengthColor {
+
+ enum PasswordStrengthColor {
     case none, weak, medium, strong
 
     var color: Color {

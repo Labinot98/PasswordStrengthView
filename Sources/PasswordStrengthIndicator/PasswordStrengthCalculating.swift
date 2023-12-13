@@ -7,17 +7,17 @@
 
 import Foundation
 
-protocol PasswordStrengthCalculating {
+ protocol PasswordStrengthCalculating {
     func calculateStrength(_ password: String) -> PasswordStrengthColor
 }
 
-extension PasswordStrengthCalculating {
-    func calculateStrength(_ password: String) -> PasswordStrengthColor {
+ extension String {
+    func calculateStrength() -> PasswordStrengthColor {
         // Custom logic for calculating password strength
-        let trimmedPassword = password.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedPassword = self.trimmingCharacters(in: .whitespacesAndNewlines)
         let length = trimmedPassword.count
         
-        if password.contains(" ") {
+        if self.contains(" ") {
             return .none
         }
         
@@ -30,6 +30,6 @@ extension PasswordStrengthCalculating {
                 return .medium
             }
         }
-        return length > 0 ? .weak : .none 
+        return length > 0 ? .weak : .none
     }
 }

@@ -7,7 +7,7 @@
 
 
 extension String {
-    var containsSpacesBetweenLetters: Bool {
+     var containsSpacesBetweenLetters: Bool {
         return self.contains(" ")
     }
 }

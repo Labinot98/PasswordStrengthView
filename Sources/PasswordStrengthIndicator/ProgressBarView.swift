@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct ProgressBar: View {
+ struct ProgressBar: View {
     var passwordStrength: PasswordStrengthColor
 
-    var body: some View {
+     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
                 Rectangle()
